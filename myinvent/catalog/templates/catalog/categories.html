@@ -1,0 +1,18 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Categories</h2>
+    <div class="categories-list">
+        {% for category in categories %}
+            <div class="category-item">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
+                <!-- Add edit/delete buttons if needed -->
+            </div>
+        {% empty %}
+            <p>No categories found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Low Stock Alerts</h2>
+    <div class="alerts-list">
+        {% for material in low_stock %}
+            <div class="alert-item">
+                <p>{{ material.name }}</p>
+                <p>Current Stock: {{ material.quantity }}</p>
+                <p>Reorder Level: {{ material.reorder_level }}</p>
+            </div>
+        {% empty %}
+            <p>No low stock alerts at this time.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

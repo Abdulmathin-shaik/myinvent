@@ -1,0 +1,141 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manufacturing Inventory System</title>
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            color: #34495e;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <h1 class="hero-title">Manufacturing Inventory System</h1>
+        <p class="hero-subtitle">Streamline your inventory management with our comprehensive solution</p>
+        <div class="cta-buttons">
+            <a href="{% url 'material_list' %}" class="btn">View Inventory</a>
+            <a href="{% url 'add_material' %}" class="btn">Add New Material</a>
+        </div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3 class="feature-title">Stock Management</h3>
+            <p class="feature-description">Track and manage your raw materials with ease. Monitor stock levels and get low stock alerts.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3 class="feature-title">Transaction Tracking</h3>
+            <p class="feature-description">Record and monitor all stock movements with detailed transaction history.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3 class="feature-title">Category Management</h3>
+            <p class="feature-description">Organize materials into categories for better inventory organization.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Quick Actions</h3>
+            <p class="feature-description">Add, update, or remove stock quantities with just a few clicks.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📍</div>
+            <h3 class="feature-title">Location Tracking</h3>
+            <p class="feature-description">Keep track of where your materials are stored in the facility.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">⚠️</div>
+            <h3 class="feature-title">Reorder Alerts</h3>
+            <p class="feature-description">Set reorder levels and get notified when stock is running low.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px;">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Ready to get started?</h2>
+        <div class="cta-buttons">
+            <a href="{% url 'material_list' %}" class="btn">View Inventory</a>
+            <a href="{% url 'add_material' %}" class="btn">Add New Material</a>
+        </div>
+    </div>
+
+    <div class="additional-features">
+        <a href="{% url 'transaction_history' %}">Transaction History</a>
+        <a href="{% url 'low_stock_alerts' %}">Low Stock Alerts</a>
+        <a href="{% url 'manage_categories' %}">Manage Categories</a>
+    </div>
+</body>
+</html>
+{% endblock %}
