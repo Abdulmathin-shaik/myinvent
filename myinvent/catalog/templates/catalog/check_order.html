@@ -1,0 +1,53 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Production Order Check</h2>
+        </div>
+        <div class="card-body">
+            <h4>Order Details</h4>
+            <p><strong>Product:</strong> {{ order.bom.name }}</p>
+            <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+        </div>
+    </div>
+
+    {% if missing_materials %}
+        <div class="alert alert-warning">
+            <h4>Missing Materials</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Required</th>
+                        <th>Available</th>
+                        <th>Shortage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in missing_materials %}
+                    <tr>
+                        <td>{{ item.material }}</td>
+                        <td>{{ item.required }}</td>
+                        <td>{{ item.available }}</td>
+                        <td class="text-danger">{{ item.shortage }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-success">
+            <h4>All materials available!</h4>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success mt-2">Start Production</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <a href="{% url 'order_list' %}" class="btn btn-secondary">Back to Orders</a>
+</div>
+{% endblock %}

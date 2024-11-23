@@ -1,0 +1,196 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+<div class="dashboard-container">
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="card-content">
+                <h3>Total Materials</h3>
+                <p class="number">{{ total_materials }}</p>
+            </div>
+        </div>
+        
+        <div class="card {% if low_stock_count > 0 %}alert{% endif %}">
+            <div class="card-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="card-content">
+                <h3>Low Stock Alerts</h3>
+                <p class="number">{{ low_stock_count }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <div class="card-content">
+                <h3>Active Orders</h3>
+                <p class="number">{{ active_orders }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-content">
+                <h3>Pending Orders</h3>
+                <p class="number">{{ pending_orders }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-container">
+            <canvas id="orderStatusChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Low Stock Alerts -->
+    <div class="alerts-section">
+        <h2>Low Stock Alerts</h2>
+        <div class="alerts-grid">
+            {% for material in low_stock_materials %}
+            <div class="alert-card">
+                <div class="alert-header">
+                    <h3>{{ material.name }}</h3>
+                    <span class="badge">Low Stock</span>
+                </div>
+                <div class="alert-content">
+                    <p>Current: {{ material.quantity }}</p>
+                    <p>Reorder Level: {{ material.reorder_level }}</p>
+                    <p>Shortage: {{ material.shortage }}</p>
+                </div>
+                <a href="{% url 'material_detail' material.id %}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="transactions-section">
+        <h2>Recent Transactions</h2>
+        <div class="transaction-list">
+            {% for transaction in recent_transactions %}
+            <div class="transaction-item">
+                <div class="transaction-icon">
+                    {% if transaction.transaction_type == 'IN' %}
+                    <i class="fas fa-arrow-up text-success"></i>
+                    {% else %}
+                    <i class="fas fa-arrow-down text-danger"></i>
+                    {% endif %}
+                </div>
+                <div class="transaction-details">
+                    <h4>{{ transaction.material.name }}</h4>
+                    <p>{{ transaction.quantity }} units {{ transaction.transaction_type }}</p>
+                    <small>{{ transaction.date|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialize charts
+    const orderStatusChart = new Chart(
+        document.getElementById('orderStatusChart'),
+        {
+            type: 'doughnut',
+            data: {
+                labels: [{% for order in orders_by_status %}'{{ order.status }}',{% endfor %}],
+                datasets: [{
+                    data: [{% for order in orders_by_status %}{{ order.count }},{% endfor %}],
+                    backgroundColor: [
+                        '#00b894',
+                        '#00cec9',
+                        '#0984e3',
+                        '#6c5ce7',
+                        '#fd79a8'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Order Status Distribution'
+                    }
+                }
+            }
+        }
+    );
+</script>
+
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        background: var(--card-bg, #2d3436);
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card.alert {
+        background: rgba(255, 82, 82, 0.1);
+        border: 1px solid #ff5252;
+    }
+
+    .card-icon {
+        font-size: 2rem;
+        color: var(--accent-color, #00b894);
+    }
+
+    .card-content h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--text-muted, #a0a0a0);
+    }
+
+    .number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--text-light, #ffffff);
+        margin: 0;
+    }
+
+    .charts-section {
+        background: var(--card-bg, #2d3436);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    /* Add more styles as needed */
+</style>
+{% endblock %}

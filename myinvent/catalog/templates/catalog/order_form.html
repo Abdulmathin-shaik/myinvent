@@ -1,0 +1,19 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Create New Order</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="button-group">
+            <button type="submit" name="action" value="start" class="btn btn-primary">
+                <i class="fas fa-play"></i> Start Order
+            </button>
+            <button type="submit" name="action" value="check" class="btn btn-info">
+                <i class="fas fa-search"></i> Check Availability
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

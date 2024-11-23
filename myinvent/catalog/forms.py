@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, RawMaterial, Transaction
+from .models import Category, RawMaterial, Transaction, BillOfMaterials, BOMItem, ProductionOrder
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -10,7 +10,7 @@ class RawMaterialForm(forms.ModelForm):
     class Meta:
         model = RawMaterial
         fields = ['name', 'SKU', 'category', 'quantity',  'reorder_level',
-                 'location']
+                 'location','cost']
         
     def clean_SKU(self):
         sku = self.cleaned_data.get('SKU')
@@ -59,5 +59,20 @@ class TransactionForm(forms.ModelForm):
 #     class Meta:
 #         model = RawMaterial
 #         fields = ['name', 'SKU', 'category', 'quantity', 'reorder_level', 'location']
+
+class BOMForm(forms.ModelForm):
+    class Meta:
+        model = BillOfMaterials
+        fields = ['name', 'description']
+
+class BOMItemForm(forms.ModelForm):
+    class Meta:
+        model = BOMItem
+        fields = ['material', 'quantity_required']
+
+class ProductionOrderForm(forms.ModelForm):
+    class Meta:
+        model = ProductionOrder
+        fields = ['bom', 'quantity', 'notes']
 
   

@@ -1,141 +1,266 @@
 {% extends 'catalog/base.html' %}
 
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Manufacturing Inventory System</title>
-    <style>
-        .hero-section {
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            margin-bottom: 40px;
-        }
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Manufacturing Inventory System</h1>
+            <p class="hero-subtitle">Streamline your production process with intelligent inventory management</p>
+            <div class="hero-buttons">
+                <a href="{% url 'material_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-box"></i> View Inventory
+                </a>
+                <a href="{% url 'create_order' %}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-plus"></i> New Order
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Quick Actions</h2>
+            <p>Everything you need, one click away</p>
+        </div>
+        
+        <div class="features-grid">
+            <a href="{% url 'material_list' %}" class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3>Inventory</h3>
+                <p>Manage your materials and stock levels</p>
+                <span class="card-link">View Inventory →</span>
+            </a>
+
+            <a href="{% url 'bom_list' %}" class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>BOM</h3>
+                <p>Manage your bills of materials</p>
+                <span class="card-link">View BOMs →</span>
+            </a>
+
+            <a href="{% url 'order_list' %}" class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h3>View Orders</h3>
+                <p>See existing production orders</p>
+                <span class="card-link">View Orders →</span>
+            </a>
+
+            <a href="{% url 'create_order' %}" class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3>Add Order</h3>
+                <p>Create a new production order</p>
+                <span class="card-link">Add New →</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Recent Activity</h2>
+            <p>Stay updated with your latest operations</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Recent BOMs -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Recent BOMs</h3>
+                    <a href="{% url 'bom_list' %}" class="view-all">View All</a>
+                </div>
+                <div class="card-content">
+                    {% for bom in recent_boms %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>{{ bom.name }}</h4>
+                            <p>{{ bom.created_date|date }}</p>
+                        </div>
+                        <a href="{% url 'bom_detail' bom.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </div>
+                    {% empty %}
+                    <p class="no-data">No recent BOMs</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-dark: #1a1c1e;
+        --primary-light: #2d3436;
+        --accent-color: #00b894;
+        --text-light: #ffffff;
+        --text-muted: #a0a0a0;
+        --card-bg: #2d3436;
+        --hover-color: #00b894;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+        color: var(--text-light);
+        padding: 100px 0;
+        margin-bottom: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 30%, rgba(0, 184, 148, 0.1) 0%, transparent 70%);
+    }
+
+    .hero-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        background: linear-gradient(45deg, #fff, #00b894);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 40px;
+        color: var(--text-muted);
+    }
+
+    /* Feature Cards */
+    .features-section {
+        background: var(--primary-dark);
+        padding: 80px 0;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .feature-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--accent-color);
+        margin-bottom: 10px;
+    }
+
+    .feature-card h3 {
+        color: var(--text-light);
+        margin: 10px 0;
+    }
+
+    .feature-card p {
+        color: var(--text-muted);
+    }
+
+    .card-link {
+        display: block;
+        margin-top: 10px;
+        color: var(--hover-color);
+        font-weight: bold;
+    }
+
+    /* Dashboard Section */
+    .dashboard-section {
+        padding: 80px 0;
+    }
+
+    .dashboard-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h3 {
+        color: var(--text-light);
+    }
+
+    .view-all {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .activity-icon {
+        font-size: 1.5rem;
+        color: var(--accent-color);
+        margin-right: 10px;
+    }
+
+    .activity-details h4 {
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .activity-details p {
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
         .hero-title {
-            font-size: 2.5em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .hero-subtitle {
-            color: #34495e;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
         }
 
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            padding: 20px;
+            grid-template-columns: 1fr;
         }
-
-        .feature-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 2em;
-            color: #3498db;
-            margin-bottom: 15px;
-        }
-
-        .feature-title {
-            font-size: 1.2em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .feature-description {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .cta-button:hover {
-            background-color: #2980b9;
-        }
-    </style>
-</head>
-<body>
-    <div class="hero-section">
-        <h1 class="hero-title">Manufacturing Inventory System</h1>
-        <p class="hero-subtitle">Streamline your inventory management with our comprehensive solution</p>
-        <div class="cta-buttons">
-            <a href="{% url 'material_list' %}" class="btn">View Inventory</a>
-            <a href="{% url 'add_material' %}" class="btn">Add New Material</a>
-        </div>
-    </div>
-
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">📦</div>
-            <h3 class="feature-title">Stock Management</h3>
-            <p class="feature-description">Track and manage your raw materials with ease. Monitor stock levels and get low stock alerts.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">🔄</div>
-            <h3 class="feature-title">Transaction Tracking</h3>
-            <p class="feature-description">Record and monitor all stock movements with detailed transaction history.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3 class="feature-title">Category Management</h3>
-            <p class="feature-description">Organize materials into categories for better inventory organization.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3 class="feature-title">Quick Actions</h3>
-            <p class="feature-description">Add, update, or remove stock quantities with just a few clicks.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">📍</div>
-            <h3 class="feature-title">Location Tracking</h3>
-            <p class="feature-description">Keep track of where your materials are stored in the facility.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">⚠️</div>
-            <h3 class="feature-title">Reorder Alerts</h3>
-            <p class="feature-description">Set reorder levels and get notified when stock is running low.</p>
-        </div>
-    </div>
-
-    <div style="text-align: center; padding: 40px;">
-        <h2 style="color: #2c3e50; margin-bottom: 20px;">Ready to get started?</h2>
-        <div class="cta-buttons">
-            <a href="{% url 'material_list' %}" class="btn">View Inventory</a>
-            <a href="{% url 'add_material' %}" class="btn">Add New Material</a>
-        </div>
-    </div>
-
-    <div class="additional-features">
-        <a href="{% url 'transaction_history' %}">Transaction History</a>
-        <a href="{% url 'low_stock_alerts' %}">Low Stock Alerts</a>
-        <a href="{% url 'manage_categories' %}">Manage Categories</a>
-    </div>
-</body>
-</html>
+    }
+</style>
 {% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+<div class="scanner-container">
+    <div class="video-container">
+        <video id="video" class="video"></video>
+    </div>
+    <div class="scanner-overlay">
+        <div class="scanning-line"></div>
+    </div>
+    <div class="scanner-buttons">
+        <button id="startButton" class="btn btn-primary">
+            <i class="fas fa-camera"></i> Start Scanner
+        </button>
+        <button id="stopButton" class="btn btn-danger" style="display: none;">
+            <i class="fas fa-stop"></i> Stop Scanner
+        </button>
+    </div>
+    <div id="result" class="result-container"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+<script>
+    let scanning = false;
+
+    document.getElementById('startButton').addEventListener('click', startScanner);
+    document.getElementById('stopButton').addEventListener('click', stopScanner);
+
+    function startScanner() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector("#video"),
+                constraints: {
+                    facingMode: "environment"
+                },
+            },
+            decoder: {
+                readers: ["ean_reader", "ean_8_reader", "code_128_reader", "code_39_reader", "upc_reader"]
+            }
+        }, function(err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+            scanning = true;
+            document.getElementById('startButton').style.display = 'none';
+            document.getElementById('stopButton').style.display = 'block';
+        });
+
+        Quagga.onDetected(function(result) {
+            if (result.codeResult.code) {
+                // Send the code to the server
+                fetch(`/api/material/scan/${result.codeResult.code}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('result').innerHTML = `
+                            <div class="scan-result">
+                                <h3>${data.name}</h3>
+                                <p>Quantity: ${data.quantity}</p>
+                                <a href="/material/${data.id}/" class="btn btn-primary">View Details</a>
+                            </div>
+                        `;
+                    })
+                    .catch(error => {
+                        document.getElementById('result').innerHTML = `
+                            <div class="scan-error">
+                                <p>Material not found</p>
+                            </div>
+                        `;
+                    });
+            }
+        });
+    }
+
+    function stopScanner() {
+        Quagga.stop();
+        scanning = false;
+        document.getElementById('startButton').style.display = 'block';
+        document.getElementById('stopButton').style.display = 'none';
+    }
+</script>
+
+<style>
+    .scanner-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+    }
+
+    .video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .scanner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid var(--accent-color, #00b894);
+        border-radius: 12px;
+    }
+
+    .scanning-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: var(--accent-color, #00b894);
+        animation: scan 2s infinite;
+    }
+
+    @keyframes scan {
+        0% { top: 0; }
+        50% { top: 100%; }
+        100% { top: 0; }
+    }
+
+    .scanner-buttons {
+        margin-top: 1rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .result-container {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: var(--card-bg, #2d3436);
+    }
+
+    .scan-result {
+        text-align: center;
+    }
+
+    .scan-error {
+        text-align: center;
+        color: #ff5252;
+    }
+</style>
+{% endblock %}
