@@ -9,6 +9,9 @@ from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -134,7 +137,8 @@ def stock_out(request, material_id):
         return redirect('material_list')
     return render(request, 'catalog/stock_movement.html', {'material': material, 'action': 'out'})
 
-def dashboard(request):
+@login_required
+def dashboard(request): 
     # Get counts and summaries
     total_materials = RawMaterial.objects.count()
     low_stock_count = RawMaterial.objects.filter(quantity__lt=F('reorder_level')).count()
@@ -214,6 +218,7 @@ def delete_bom_item(request, pk):
     messages.success(request, 'Material removed from BOM')
     return redirect('bom_detail', pk=bom_pk)
 
+@login_required
 def create_order(request):
     if request.method == 'POST':
         form = ProductionOrderForm(request.POST)
@@ -336,3 +341,22 @@ def scan_material(request, barcode):
         })
     except RawMaterial.DoesNotExist:
         return JsonResponse({'error': 'Material not found'}, status=404)
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Registration successful!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Registration failed. Please correct the errors.')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def material_detail(request, pk):
+    material = get_object_or_404(RawMaterial, pk=pk)
+    return render(request, 'catalog/material_detail.html', {'material': material})

@@ -1,0 +1,128 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Register</h2>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-feedback">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+        <div class="auth-links">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 60px);
+        padding: 2rem;
+        background: var(--primary-dark);
+    }
+
+    .auth-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-card h2 {
+        color: var(--text-light);
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-form .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .auth-form label {
+        display: block;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-form input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--primary-light);
+        border-radius: 4px;
+        background: var(--primary-dark);
+        color: var(--text-light);
+    }
+
+    .auth-form .error-feedback {
+        color: #ff5252;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn-block {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--text-muted);
+    }
+
+    .auth-links a {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    .alert {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        background: rgba(0, 184, 148, 0.1);
+        border: 1px solid #00b894;
+        color: #00b894;
+    }
+
+    .alert-error {
+        background: rgba(255, 82, 82, 0.1);
+        border: 1px solid #ff5252;
+        color: #ff5252;
+    }
+</style>
+{% endblock %} 

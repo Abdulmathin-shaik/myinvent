@@ -4,16 +4,16 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card custom-card">
                 <div class="card-header">
-                    <h2>{% if form.instance.pk %}Edit{% else %}Create New{% endif %} Bill of Materials</h2>
+                    <h2 class="text-light">{% if form.instance.pk %}Edit{% else %}Create New{% endif %} Bill of Materials</h2>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
                         
                         <div class="form-group mb-3">
-                            <label for="{{ form.name.id_for_label }}">Product Name:</label>
+                            <label for="{{ form.name.id_for_label }}" class="text-light">Product Name:</label>
                             {{ form.name }}
                             {% if form.name.errors %}
                             <div class="text-danger">
@@ -23,7 +23,7 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="{{ form.description.id_for_label }}">Description:</label>
+                            <label for="{{ form.description.id_for_label }}" class="text-light">Description:</label>
                             {{ form.description }}
                             {% if form.description.errors %}
                             <div class="text-danger">
@@ -46,14 +46,21 @@
 </div>
 
 <style>
+    .custom-card {
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     /* Style form inputs */
     form input[type="text"], 
     form textarea {
         width: 100%;
         padding: 8px;
         margin-top: 5px;
-        border: 1px solid #ddd;
+        background: var(--primary-dark);
+        border: 1px solid var(--primary-light);
         border-radius: 4px;
+        color: var(--text-light);
     }
 
     form textarea {
@@ -63,12 +70,13 @@
     /* Style form labels */
     form label {
         font-weight: bold;
-        color: #333;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
     }
 
     /* Style error messages */
     .text-danger {
-        color: #dc3545;
+        color: #ff5252;
         font-size: 0.9em;
         margin-top: 5px;
     }
@@ -76,6 +84,11 @@
     /* Style buttons */
     .btn {
         margin-right: 10px;
+    }
+
+    .card-header {
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 </style>
 {% endblock %}

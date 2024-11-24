@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Bills of Materials</h2>
+        <h2 class="text-light">Bills of Materials</h2>
         <a href="{% url 'create_bom' %}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Create New BOM
         </a>
@@ -12,12 +12,12 @@
     <div class="row">
         {% for bom in boms %}
         <div class="col-md-6 mb-3">
-            <div class="card">
+            <div class="card custom-card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ bom.name }}</h5>
-                    <p class="card-text">{{ bom.description|truncatewords:20 }}</p>
-                    <p><strong>Components:</strong> {{ bom.bomitem_set.count }}</p>
-                    <p><strong>Total Cost:</strong> ${{ bom.get_total_cost }}</p>
+                    <h5 class="card-title text-light">{{ bom.name }}</h5>
+                    <p class="card-text text-light">{{ bom.description|truncatewords:20 }}</p>
+                    <p class="text-light"><strong>Components:</strong> {{ bom.bomitem_set.count }}</p>
+                    <p class="text-light"><strong>Total Cost:</strong> ${{ bom.get_total_cost }}</p>
                     <p class="text-muted">Created: {{ bom.created_date|date }}</p>
                     <a href="{% url 'bom_detail' bom.pk %}" class="btn btn-info">
                         Manage Components
@@ -27,10 +27,29 @@
         </div>
         {% empty %}
         <div class="col-12">
-            <p>No BOMs created yet.</p>
+            <p class="text-light">No BOMs created yet.</p>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<style>
+    .custom-card {
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .card-title {
+        color: var(--text-light);
+    }
+    
+    .text-light {
+        color: var(--text-light) !important;
+    }
+    
+    .text-muted {
+        color: var(--text-muted) !important;
+    }
+</style>
 {% endblock %}
 

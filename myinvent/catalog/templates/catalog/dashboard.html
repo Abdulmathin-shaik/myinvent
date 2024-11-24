@@ -67,7 +67,7 @@
                     <p>Reorder Level: {{ material.reorder_level }}</p>
                     <p>Shortage: {{ material.shortage }}</p>
                 </div>
-                <a href="{% url 'material_detail' material.id %}" class="btn btn-primary btn-sm">View Details</a>
+                <a href="{% url 'material_list' %}" class="btn btn-primary btn-sm">View Materials</a>
             </div>
             {% endfor %}
         </div>
